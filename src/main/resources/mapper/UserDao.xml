@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vue.admin.vueadminapi.dao.UserDao">
+
+	<select id="checkUser" resultType="com.vue.admin.vueadminapi.dto.UserDTO">
+		<![CDATA[
+			SELECT
+				a.user_id,
+				a.username,
+				a.`nickname`,
+				a.`password`,
+				a.`avatar`,
+				a.`status`,
+				a.`role_key`,
+				a.`desc`,
+				a.gmt_create,
+				a.gmt_modified
+			FROM
+				sys_user AS a
+			WHERE
+				a.username = #{username}
+			AND a.`password` = #{password}
+		]]>
+	</select>
+
+	<select id="get" resultType="com.vue.admin.vueadminapi.dto.UserDTO">
+		<![CDATA[
+			SELECT
+				a.user_id,
+				a.username,
+				a.`nickname`,
+				a.`password`,
+				a.`avatar`,
+				a.`status`,
+				a.`role_key`,
+				a.`desc`,
+				a.gmt_create,
+				a.gmt_modified
+			FROM
+				sys_user AS a
+			WHERE
+				a.user_id = #{userId}
+		]]>
+	</select>
+
+	<select id="list" resultType="com.vue.admin.vueadminapi.dto.UserDTO">
+		SELECT
+			a.user_id,
+			a.username,
+			a.`nickname`,
+			a.`password`,
+			a.`avatar`,
+			a.`status`,
+			a.`role_key`,
+			a.`desc`,
+			a.gmt_create,
+			a.gmt_modified
+		FROM
+			sys_user AS a
+		<where>
+			<if test="userId != null and userId != ''"> and a.user_id = #{userId} </if>
+			<if test="username != null and username != ''"> and a.username = #{username} </if>
+			<if test="nickname != null and nickname != ''"> and a.nickname = #{nickname} </if>
+		</where>
+		ORDER BY a.gmt_create DESC
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			sys_user AS a
+		<where>
+			<if test="userId != null and userId != ''"> and a.user_id = #{userId} </if>
+			<if test="username != null and username != ''"> and a.username = #{username} </if>
+			<if test="nickname != null and nickname != ''"> and a.nickname = #{nickname} </if>
+		</where>
+	</select>
+
+	<update id="modifyStatus" parameterType="com.vue.admin.vueadminapi.dto.UserDTO">
+		UPDATE sys_user
+		SET
+			`status` = #{status}
+		WHERE
+			user_id = #{userId}
+	</update>
+
+	<update id="resetPwd" parameterType="com.vue.admin.vueadminapi.dto.UserDTO">
+		UPDATE sys_user
+		SET
+			`password` = #{password}
+		WHERE
+			user_id = #{userId}
+	</update>
+
+	<insert id="add" parameterType="com.vue.admin.vueadminapi.dto.UserDTO" useGeneratedKeys="true" keyProperty="userId">
+		INSERT INTO sys_user(
+			username,
+			`nickname`,
+			`password`,
+			`avatar`,
+			`status`,
+			`role_key`,
+			`desc`,
+			gmt_create,
+			gmt_modified
+		) VALUES (
+			#{username},
+			#{nickname},
+			#{password},
+			#{avatar},
+			#{status},
+			#{roleKey},
+			#{desc},
+			#{gmtCreate},
+			#{gmtModified}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.vue.admin.vueadminapi.dto.UserDTO">
+		UPDATE sys_user
+		<set>
+			<if test="username != null and username != ''">`username` = #{username}, </if>
+			<if test="nickname != null and nickname != ''">`nickname` = #{nickname}, </if>
+			<if test="password != null and password != ''">`password` = #{password}, </if>
+			<if test="avatar != null and avatar != ''">`avatar` = #{avatar}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="roleKey != null">`role_key` = #{roleKey}, </if>
+			<if test="desc != null and desc != ''">`desc` = #{desc}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}</if>
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM sys_user where user_id = #{userId}
+	</delete>
+
+</mapper>

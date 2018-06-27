@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vue.admin.vueadminapi.dao.RoleDao">
+
+	<select id="get" resultType="com.vue.admin.vueadminapi.dto.RoleDTO">
+		<![CDATA[
+			SELECT
+				a.role_id,
+				a.role_key,
+				a.role_name,
+				a.remark,
+				a.gmt_create,
+				a.gmt_modified
+			FROM
+				sys_role AS a
+			WHERE
+				a.role_id = #{roleId}
+		]]>
+	</select>
+
+	<select id="list" resultType="com.vue.admin.vueadminapi.dto.RoleDTO">
+		SELECT
+			a.role_id,
+			a.role_key,
+			a.role_name,
+			a.remark,
+			a.gmt_create,
+			a.gmt_modified
+		FROM
+			sys_role AS a
+		<where>
+			<if test="roleName != null and roleName != ''"> and a.role_name = #{roleName} </if>
+		</where>
+		ORDER BY a.role_id ASC
+	</select>
+
+	<insert id="add" parameterType="com.vue.admin.vueadminapi.dto.RoleDTO" useGeneratedKeys="true" keyProperty="roleId">
+		INSERT INTO sys_role(
+			role_key,
+			role_name,
+			remark,
+			gmt_create,
+			gmt_modified
+		) VALUES (
+			#{roleKey},
+			#{roleName},
+			#{remark},
+			#{gmtCreate},
+			#{gmtModified}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.vue.admin.vueadminapi.dto.RoleDTO">
+		UPDATE sys_role
+		<set>
+			<if test="roleKey != null and roleKey != ''">`role_key` = #{roleKey}, </if>
+			<if test="roleName != null and roleName != ''">`role_name` = #{roleName}, </if>
+			<if test="remark != null and remark != ''">`remark` = #{remark}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}</if>
+		</set>
+		WHERE role_id = #{roleId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM sys_role where role_id = #{roleId}
+	</delete>
+
+
+
+</mapper>
